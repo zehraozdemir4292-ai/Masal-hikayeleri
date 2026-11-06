@@ -1,0 +1,599 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dilden Dile Türk Masalları</title>
+
+  <style>
+    :root {
+      --lacivert: #243447;
+      --krem: #F6F0E5;
+      --altin: #C49A45;
+      --kahverengi: #6B4F3A;
+      --beyaz: #FFFFFF;
+      --metin: #333333;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--krem);
+      color: var(--metin);
+      line-height: 1.7;
+    }
+
+    header {
+      background-color: var(--lacivert);
+      color: var(--krem);
+      text-align: center;
+      padding: 55px 20px;
+      border-bottom: 6px solid var(--altin);
+    }
+
+    header h1 {
+      font-family: Georgia, serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+    }
+
+    header p {
+      font-size: 1.05rem;
+      max-width: 700px;
+      margin: auto;
+      color: var(--krem);
+    }
+
+    nav {
+      background-color: var(--kahverengi);
+      text-align: center;
+      padding: 13px;
+    }
+
+    nav a {
+      color: var(--beyaz);
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      color: var(--altin);
+    }
+
+    .giris {
+      max-width: 900px;
+      margin: 45px auto 30px;
+      padding: 0 22px;
+      text-align: center;
+    }
+
+    .giris h2,
+    .masallar-baslik {
+      font-family: Georgia, serif;
+      color: var(--lacivert);
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+
+    .giris p {
+      font-size: 1.05rem;
+    }
+
+    .masallar-alani {
+      max-width: 1200px;
+      margin: 35px auto 70px;
+      padding: 0 22px;
+    }
+
+    .masallar-baslik {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .masal-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .masal-karti {
+      background-color: var(--beyaz);
+      border: 1px solid #e1d8c9;
+      border-top: 5px solid var(--altin);
+      border-radius: 10px;
+      padding: 25px 20px;
+      display: flex;
+      flex-direction: column;
+      min-height: 220px;
+      box-shadow: 0 4px 12px rgba(36, 52, 71, 0.08);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .masal-karti:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(36, 52, 71, 0.15);
+    }
+
+    .masal-karti h3 {
+      font-family: Georgia, serif;
+      color: var(--lacivert);
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+    }
+
+    .masal-karti p {
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+      flex-grow: 1;
+    }
+
+    .oku-btn {
+      background-color: var(--lacivert);
+      color: var(--krem);
+      border: 2px solid var(--lacivert);
+      border-radius: 6px;
+      padding: 10px 16px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .oku-btn:hover {
+      background-color: var(--altin);
+      color: var(--lacivert);
+      border-color: var(--altin);
+    }
+
+    .modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(15, 25, 38, 0.82);
+      z-index: 1000;
+      padding: 20px;
+      overflow-y: auto;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-bg.aktif {
+      display: flex;
+    }
+
+    .modal-icerik {
+      background-color: var(--krem);
+      color: var(--metin);
+      width: 100%;
+      max-width: 760px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 12px;
+      padding: 35px;
+      position: relative;
+      border-top: 7px solid var(--altin);
+    }
+
+    .modal-icerik h2 {
+      font-family: Georgia, serif;
+      color: var(--lacivert);
+      font-size: 2rem;
+      margin: 10px 40px 8px 0;
+    }
+
+    .modal-tur {
+      color: var(--kahverengi);
+      font-weight: bold;
+      margin-bottom: 22px;
+    }
+
+    .modal-metin p {
+      margin-bottom: 18px;
+      font-size: 1.05rem;
+      line-height: 1.9;
+    }
+
+    .kapat-btn {
+      position: absolute;
+      top: 12px;
+      right: 17px;
+      border: none;
+      background: transparent;
+      color: var(--lacivert);
+      font-size: 2rem;
+      cursor: pointer;
+      padding: 0 8px;
+    }
+
+    .modal-alt {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-top: 1px solid #d8cbb7;
+      padding-top: 20px;
+      margin-top: 25px;
+    }
+
+    .modal-alt button {
+      background-color: var(--lacivert);
+      color: var(--krem);
+      border: none;
+      border-radius: 5px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .modal-alt button:hover:not(:disabled) {
+      background-color: var(--altin);
+      color: var(--lacivert);
+    }
+
+    .modal-alt button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    #masalSayaci {
+      color: var(--kahverengi);
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    footer {
+      background-color: var(--lacivert);
+      color: var(--krem);
+      text-align: center;
+      padding: 25px 15px;
+      border-top: 5px solid var(--altin);
+    }
+
+    footer p {
+      font-size: 0.9rem;
+    }
+
+    button:focus-visible,
+    a:focus-visible {
+      outline: 3px solid var(--altin);
+      outline-offset: 4px;
+    }
+
+    @media (max-width: 960px) {
+      .masal-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 40px 18px;
+      }
+
+      nav a {
+        display: inline-block;
+        margin: 5px 9px;
+      }
+
+      .masal-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-icerik {
+        padding: 25px 20px;
+      }
+
+      .modal-icerik h2 {
+        font-size: 1.6rem;
+      }
+
+      .modal-alt {
+        flex-wrap: wrap;
+      }
+
+      #masalSayaci {
+        order: -1;
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header id="anasayfa">
+    <h1>Dilden Dile Türk Masalları</h1>
+    <p>Geçmişten günümüze aktarılan masalların ve halk hikâyelerinin büyülü dünyasına hoş geldiniz.</p>
+  </header>
+
+  <nav>
+    <a href="#anasayfa">Ana Sayfa</a>
+    <a href="#hakkinda">Proje Hakkında</a>
+    <a href="#masallar">Masallar</a>
+  </nav>
+
+  <section class="giris" id="hakkinda">
+    <h2>Masalların Büyülü Dünyası</h2>
+    <p>
+      Masallar, kültürümüzün sözlü anlatım geleneğini yaşatan önemli
+      eserlerdir. Nesilden nesile aktarılan bu hikâyeler; iyilik,
+      cesaret, sevgi, dostluk ve adalet gibi değerleri anlatır.
+      Bu projede Türk kültüründe önemli bir yere sahip sekiz
+      masal ve halk hikâyesi bir araya getirilmiştir.
+    </p>
+  </section>
+
+  <main class="masallar-alani" id="masallar">
+    <h2 class="masallar-baslik">Masallarımız</h2>
+    <div class="masal-grid" id="masalGrid"></div>
+  </main>
+
+  <div class="modal-bg" id="masalModal" aria-hidden="true">
+    <section class="modal-icerik"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalBaslik">
+
+      <button class="kapat-btn" id="kapatBtn"
+        aria-label="Masalı kapat">&times;</button>
+
+      <h2 id="modalBaslik"></h2>
+      <div class="modal-tur" id="modalTur"></div>
+      <div class="modal-metin" id="modalMetin"></div>
+
+      <div class="modal-alt">
+        <button id="oncekiBtn">← Önceki Masal</button>
+        <span id="masalSayaci"></span>
+        <button id="sonrakiBtn">Sonraki Masal →</button>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <p>Dilden Dile Türk Masalları | Programlamaya Giriş Projesi</p>
+    <p>Geleneksel anlatılarımızı yaşatmak ve gelecek nesillere aktarmak için.</p>
+  </footer>
+
+  <script>
+    const masallar = [
+      {
+        baslik: "Keloğlan ile Dev",
+        tur: "Türk Halk Masalı",
+        aciklama: "Keloğlan'ın zekâsı ve cesaretiyle karşılaştığı zorlukları aşmasını anlatır.",
+        metin: [
+          "Bir varmış, bir yokmuş. Evvel zaman içinde, kalbur saman içinde, küçük bir köyde annesiyle yaşayan Keloğlan adında akıllı bir delikanlı varmış. Keloğlan'ın cebinde parası azmış ama aklı ve cesareti hiç eksik olmazmış.",
+          "Bir gün köyün yakınındaki dağda yaşayan bir dev, köylülerin hayvanlarını ve yiyeceklerini almaya başlamış. Köylüler bu durumdan çok korkmuş. Keloğlan ise bu sorunu çözmeye karar vermiş.",
+          "Yanına biraz yiyecek alıp devin yaşadığı mağaraya gitmiş. Dev, Keloğlan'ı görünce onu küçümsemiş. Fakat Keloğlan zekice bir plan yapmış. Devle güç yarıştırmak yerine onu kendi oyununa çekmiş ve dikkatini dağıtarak mağaradan çıkmayı başarmış.",
+          "Keloğlan, devin sakladığı yiyecekleri köylülere geri götürmüş. Köylüler ona teşekkür etmiş. Böylece herkes, gücün yanında aklın da ne kadar önemli olduğunu anlamış."
+        ]
+      },
+      {
+        baslik: "Kırk Haramiler",
+        tur: "Binbir Gece Masalı",
+        aciklama: "Ali Baba'nın gizli bir hazineyi keşfetmesi ve karşılaştığı tehlikeleri anlatır.",
+        metin: [
+          "Bir varmış, bir yokmuş. Ali Baba adında yoksul ama dürüst bir oduncu varmış. Bir gün ormanda odun toplarken bir grup atlının yaklaştığını görmüş. Hemen bir ağacın arkasına saklanmış.",
+          "Atlıların başındaki adam büyük bir kayanın önünde durmuş ve 'Açıl susam açıl!' diye seslenmiş. Kaya bir kapı gibi açılmış. Haramiler içeri girip bir süre sonra dışarı çıkmış. Liderleri bu kez 'Kapan susam kapan!' demiş ve kaya yeniden kapanmış.",
+          "Haramiler uzaklaşınca Ali Baba aynı sözleri söylemiş. Kaya açılmış ve içeride altınlarla dolu büyük bir hazine görmüş. Ali Baba ihtiyacı kadarını alıp evine dönmüş.",
+          "Ancak hazinenin sırrı ortaya çıkınca haramiler Ali Baba'yı bulmaya çalışmış. Ali Baba'nın akıllı ve cesur hizmetçisi, kurduğu planla onu büyük bir tehlikeden kurtarmış.",
+          "Ali Baba yaşadıklarından sonra dürüstlüğün, dikkatli olmanın ve zor zamanlarda aklı kullanmanın önemini anlamış."
+        ]
+      },
+      {
+        baslik: "Üç Turunçlar",
+        tur: "Türk Halk Masalı",
+        aciklama: "Üç turunç ve sevgi uğruna çıkılan zorlu bir yolculuğu anlatır.",
+        metin: [
+          "Bir varmış, bir yokmuş. Bir padişahın oğlu varmış. Bir gün çıktığı yolculukta karşısına yaşlı bir kişi çıkmış ve ona üç turunç vermiş. Bu turunçların ancak doğru yerde ve doğru zamanda kesilirse içlerinden güzelliklerin çıkacağını söylemiş.",
+          "Şehzade yoluna devam etmiş. Susuzluktan yorulduğu bir yerde ilk turunçu kesmiş. İçinden güzel bir kız çıkmış ama su bulamadığı için kısa süre sonra gözden kaybolmuş.",
+          "Şehzade ikinci turunçta da aynı şeyi yaşamış. Sonunda üçüncü turunçu kesmeden önce uygun bir yer bulmuş ve yanında su bulundurmuş. Turunç açılınca içinden çok güzel bir kız çıkmış.",
+          "Şehzade ile kız birbirlerini sevmişler. Ancak mutlulukları kıskançlık ve hilelerle sınanmış. Şehzade, sevdiğine kavuşabilmek için birçok zorluğu aşmış.",
+          "Sonunda gerçek ortaya çıkmış ve iki genç yeniden bir araya gelmiş. Masal, sabrın ve sevginin önemini anlatarak sona ermiş."
+        ]
+      },
+      {
+        baslik: "Tahir ile Zühre",
+        tur: "Halk Hikâyesi",
+        aciklama: "Birbirini seven Tahir ile Zühre'nin kavuşma mücadelesini anlatır.",
+        metin: [
+          "Bir varmış, bir yokmuş. Vaktiyle bir padişah ile vezirinin çocukları olmuş. Tahir ve Zühre birlikte büyümüş, zamanla birbirlerine gönül vermişler.",
+          "İki genç birbirini çok sevmiş. Ancak Zühre'nin babası onların evlenmesine karşı çıkmış. Tahir'i saraydan uzaklaştırmış ve iki gencin görüşmesini engellemeye çalışmış.",
+          "Tahir, Zühre'ye kavuşabilmek için uzun yollar aşmış ve pek çok zorlukla karşılaşmış. Zühre de sevdiğini unutmayıp ondan haber beklemiş.",
+          "İki gencin sevgisi, engeller ve ayrılıklar karşısında sınanmış. Hikâye, kavuşamayan âşıkların yaşadığı derin acıyı ve halk hikâyelerindeki sevda temasını anlatır."
+        ]
+      },
+      {
+        baslik: "Kerem ile Aslı",
+        tur: "Halk Hikâyesi",
+        aciklama: "Kerem ile Aslı'nın engellerle dolu aşk yolculuğunu anlatır.",
+        metin: [
+          "Bir varmış, bir yokmuş. Kerem adında bir genç, Aslı adında güzel bir kıza âşık olmuş. İkisi de birbirini sevmiş ancak aileleri bu sevdaya karşı çıkmış.",
+          "Aslı'nın ailesi başka bir yere göç edince Kerem de sevdiğini bulmak için yollara düşmüş. Şehir şehir dolaşmış, köy köy Aslı'yı aramış.",
+          "Kerem sazını eline alıp sevgisini türkülerle anlatmış. Yol boyunca birçok insanla karşılaşmış ve Aslı'nın izini sürmüş.",
+          "Sonunda Aslı'ya kavuşmuş olsa da iki gencin önündeki engeller bitmemiş. Kerem ile Aslı'nın hikâyesi, halk edebiyatında ölümsüzleşen büyük bir sevda anlatısı olarak günümüze ulaşmış."
+        ]
+      },
+      {
+        baslik: "Zümrüdüanka Kuşu",
+        tur: "Efsanevi Masal Anlatısı",
+        aciklama: "Zümrüdüanka kuşunu bulmak için çıkılan cesaret ve umut dolu yolculuğu anlatır.",
+        metin: [
+          "Bir varmış, bir yokmuş. Uzak diyarlarda, kimsenin ulaşamadığı yüksek dağların ardında Zümrüdüanka adında efsanevi bir kuş yaşarmış. Bu kuşun bilgeliği ve iyiliğiyle tanındığı söylenirmiş.",
+          "Bir gün ülkenin başına büyük bir sıkıntı gelmiş. İnsanlar çare bulamayınca Zümrüdüanka'yı aramaya karar vermişler. Uzun ve tehlikeli bir yolculuğa cesur bir genç çıkmış.",
+          "Genç, yol boyunca karanlık ormanlardan geçmiş, yüksek dağları aşmış ve birçok sınavla karşılaşmış. Her zorlukta umudunu kaybetmemiş.",
+          "Sonunda Zümrüdüanka'nın yaşadığı yere ulaşmış. Kuş ona gerçek gücün yalnızca kuvvette değil; sabırda, bilgide ve iyilikte olduğunu anlatmış.",
+          "Genç öğrendiklerini halkıyla paylaşmış. İnsanlar birlikte hareket ederek sorunlarını çözmüşler. Böylece Zümrüdüanka, umut ve yeniden doğuşun simgesi olarak anılmaya devam etmiş."
+        ]
+      },
+      {
+        baslik: "Altın Saçlı Çocuk",
+        tur: "Türk Halk Masalı",
+        aciklama: "Altın saçlarıyla dikkat çeken bir çocuğun başından geçenleri anlatır.",
+        metin: [
+          "Bir varmış, bir yokmuş. Küçük bir köyde altın gibi parlayan saçları olan bir çocuk yaşarmış. Herkes onun saçlarına hayran kalırmış. Ancak çocuk, görünüşünden çok iyi kalbiyle tanınmak istermiş.",
+          "Bir gün köyün yakınındaki ormanda yolunu kaybeden yaşlı bir yolcuya rastlamış. Çocuk, kendi yolunu uzatmak pahasına yaşlı adama yardım etmiş ve onu güvenli bir yere götürmüş.",
+          "Daha sonra köyde büyük bir sıkıntı yaşanmış. Çocuk, çevresindekilerle birlikte çalışarak sorunun çözülmesine yardımcı olmuş.",
+          "Köylüler onun yalnızca altın saçlı değil, aynı zamanda altın gibi bir kalbe sahip olduğunu anlamışlar. Çocuk da iyiliğin insanı gerçekten değerli kıldığını öğrenmiş."
+        ]
+      },
+      {
+        baslik: "Ferhat ile Şirin",
+        tur: "Halk Hikâyesi",
+        aciklama: "Ferhat'ın Şirin'e kavuşmak için gösterdiği büyük fedakârlığı anlatır.",
+        metin: [
+          "Bir varmış, bir yokmuş. Ferhat adında yetenekli bir nakkaş, Şirin adında güzel ve iyi kalpli bir kıza âşık olmuş. İki genç birbirini sevmiş ancak kavuşmaları kolay olmamış.",
+          "Şirin'e kavuşmak isteyen Ferhat'a çok zor bir görev verilmiş. Dağları aşarak şehre su getirmesi istenmiş. Ferhat, sevdiğine ulaşabilmek için bu görevi kabul etmiş.",
+          "Elindeki kazmayla kayaları oymaya başlamış. Günler, aylar geçmiş; Ferhat yorulsa da çalışmayı bırakmamış. Onun bu çabası, aşkının ve kararlılığının simgesi olmuş.",
+          "Ancak Ferhat'a Şirin'in öldüğü yönünde acı bir haber ulaşmış. Bu haber karşısında büyük bir üzüntü yaşamış. Böylece Ferhat ile Şirin'in hikâyesi, halk anlatılarında fedakârlık ve kavuşamayan aşkın simgesi hâline gelmiş."
+        ]
+      }
+    ];
+
+    const masalGrid = document.getElementById("masalGrid");
+    const modal = document.getElementById("masalModal");
+    const modalBaslik = document.getElementById("modalBaslik");
+    const modalTur = document.getElementById("modalTur");
+    const modalMetin = document.getElementById("modalMetin");
+    const masalSayaci = document.getElementById("masalSayaci");
+    const oncekiBtn = document.getElementById("oncekiBtn");
+    const sonrakiBtn = document.getElementById("sonrakiBtn");
+    const kapatBtn = document.getElementById("kapatBtn");
+
+    let aktifMasal = 0;
+    let oncekiOdak = null;
+
+    // Masal kartlarını sayfaya ekler.
+    function masallariListele() {
+      masalGrid.innerHTML = "";
+
+      masallar.forEach((masal, index) => {
+        const kart = document.createElement("article");
+        kart.className = "masal-karti";
+
+        const baslik = document.createElement("h3");
+        baslik.textContent = masal.baslik;
+
+        const aciklama = document.createElement("p");
+        aciklama.textContent = masal.aciklama;
+
+        const buton = document.createElement("button");
+        buton.className = "oku-btn";
+        buton.textContent = "Masalı Oku";
+        buton.type = "button";
+        buton.addEventListener("click", () => masalAc(index));
+
+        kart.append(baslik, aciklama, buton);
+        masalGrid.appendChild(kart);
+      });
+    }
+
+    // Seçilen masalı açar.
+    function masalAc(index) {
+      if (index < 0 || index >= masallar.length) return;
+
+      aktifMasal = index;
+      oncekiOdak = document.activeElement;
+      masaliGoster();
+
+      modal.classList.add("aktif");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      kapatBtn.focus();
+    }
+
+    // Aktif masalın başlığını ve metnini gösterir.
+    function masaliGoster() {
+      const masal = masallar[aktifMasal];
+
+      modalBaslik.textContent = masal.baslik;
+      modalTur.textContent = masal.tur;
+      modalMetin.replaceChildren();
+
+      masal.metin.forEach(paragraf => {
+        const p = document.createElement("p");
+        p.textContent = paragraf;
+        modalMetin.appendChild(p);
+      });
+
+      masalSayaci.textContent =
+        (aktifMasal + 1) + " / " + masallar.length;
+
+      oncekiBtn.disabled = aktifMasal === 0;
+      sonrakiBtn.disabled = aktifMasal === masallar.length - 1;
+    }
+
+    // Modal penceresini kapatır.
+    function masalKapat() {
+      modal.classList.remove("aktif");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+
+      if (oncekiOdak && typeof oncekiOdak.focus === "function") {
+        oncekiOdak.focus();
+      }
+    }
+
+    // Bir önceki masala geçer.
+    function oncekiMasal() {
+      if (aktifMasal > 0) {
+        aktifMasal--;
+        masaliGoster();
+      }
+    }
+
+    // Bir sonraki masala geçer.
+    function sonrakiMasal() {
+      if (aktifMasal < masallar.length - 1) {
+        aktifMasal++;
+        masaliGoster();
+      }
+    }
+
+    // Düğme olayları.
+    kapatBtn.addEventListener("click", masalKapat);
+    oncekiBtn.addEventListener("click", oncekiMasal);
+    sonrakiBtn.addEventListener("click", sonrakiMasal);
+
+    // Modalın dışına tıklanınca kapatır.
+    modal.addEventListener("click", function(event) {
+      if (event.target === modal) {
+        masalKapat();
+      }
+    });
+
+    // Klavye kontrolleri.
+    document.addEventListener("keydown", function(event) {
+      if (!modal.classList.contains("aktif")) return;
+
+      if (event.key === "Escape") {
+        masalKapat();
+      }
+
+      if (event.key === "ArrowLeft") {
+        oncekiMasal();
+      }
+
+      if (event.key === "ArrowRight") {
+        sonrakiMasal();
+      }
+    });
+
+    // Sayfa açıldığında masal kartlarını oluşturur.
+    masallariListele();
+  </script>
+
+</body>
+</html>
